@@ -543,19 +543,6 @@ Los siguientes archivos están excluidos de Git mediante `.gitignore`:
 
 Utiliza siempre el archivo `.env.example` como plantilla y crea tus propios archivos de entorno localmente.
 
-## Scripts Disponibles
-
-### Desarrollo
-```bash
-npm run dev          # Iniciar servidor de desarrollo
-```
-
-### Producción
-```bash
-npm run build        # Construir para producción
-npm run preview      # Previsualizar build de producción localmente
-```
-
 ## Endpoints de la API
 
 ### POST /messages
@@ -571,54 +558,3 @@ Almacena un mensaje de chat en DynamoDB.
 }
 ```
 
-**Respuesta (Éxito):**
-```json
-{
-  "success": true,
-  "messageId": "uuid-aqui",
-  "message": "Mensaje guardado exitosamente"
-}
-```
-
-**Respuesta (Error):**
-```json
-{
-  "error": "Descripción del mensaje de error"
-}
-```
-
-## Solución de Problemas
-
-### Problemas de Autenticación
-
-Si encuentras errores de "No matching state found in storage":
-1. Verifica que tus URLs de callback de Cognito coincidan exactamente con las URLs de tu aplicación
-2. Comprueba que el dominio de Cognito esté configurado correctamente
-3. Asegúrate de que las cookies estén habilitadas en tu navegador
-
-### Problemas de Conexión con la API
-
-Si los mensajes no se están guardando:
-1. Verifica que `VITE_API_BASE_URL` esté configurado correctamente
-2. Comprueba la configuración de CORS en API Gateway
-3. Revisa los logs de la función Lambda en CloudWatch
-4. Verifica los permisos de la tabla DynamoDB
-
-### Problemas de Build
-
-Si el build falla:
-1. Limpia node_modules y reinstala: `rm -rf node_modules && npm install`
-2. Limpia la caché de Vite: `rm -rf node_modules/.vite`
-3. Asegúrate de que todas las variables de entorno estén configuradas
-
-## Licencia
-
-MIT
-
-## Contribuciones
-
-¡Las contribuciones son bienvenidas! Por favor, siéntete libre de enviar un Pull Request.
-
-## Soporte
-
-Para problemas y preguntas, por favor abre un issue en el repositorio de GitHub.

@@ -1,52 +1,52 @@
 # Vue Chat Replica
 
-A modern chat application built with Vue 3, Vite, and AWS serverless services.
+Una aplicación de chat moderna construida con Vue 3, Vite y servicios serverless de AWS.
 
-**Live Demo:** https://d273m1rugj2sd0.cloudfront.net/
+**Demo en vivo:** https://d273m1rugj2sd0.cloudfront.net/
 
-## Authors
+## Autores
 
 - Adrián Riera Granada
 - Raúl González Alguacil
 
-## Overview
+## Descripción General
 
-This project is a full-stack chat application that demonstrates the integration of modern frontend frameworks with AWS cloud services. The application features user authentication, real-time message handling, and persistent storage using a serverless architecture.
+Este proyecto es una aplicación de chat full-stack que demuestra la integración de frameworks frontend modernos con servicios en la nube de AWS. La aplicación cuenta con autenticación de usuarios, manejo de mensajes en tiempo real y almacenamiento persistente utilizando una arquitectura serverless.
 
-## Features
+## Características
 
-- User authentication with AWS Cognito (OAuth 2.0)
-- Modern dark-themed chat interface
-- Multiple AI model selection (GPT-4, Claude, Gemini)
-- Message persistence with AWS DynamoDB
-- Serverless backend architecture
-- Responsive design
-- Secure credential management
+- Autenticación de usuarios con AWS Cognito (OAuth 2.0)
+- Interfaz de chat moderna con tema oscuro
+- Selección de múltiples modelos de IA (GPT-4, Claude, Gemini)
+- Persistencia de mensajes con AWS DynamoDB
+- Arquitectura backend serverless
+- Diseño responsive
+- Gestión segura de credenciales
 
-## Technology Stack
+## Stack Tecnológico
 
 ### Frontend
-- **Framework:** Vue 3 with Composition API
-- **Build Tool:** Vite
-- **Routing:** Vue Router
-- **Authentication:** AWS Cognito with OAuth 2.0
-- **Styling:** Vanilla CSS
+- **Framework:** Vue 3 con Composition API
+- **Herramienta de Build:** Vite
+- **Enrutamiento:** Vue Router
+- **Autenticación:** AWS Cognito con OAuth 2.0
+- **Estilos:** CSS Vanilla
 
 ### Backend
 - **API Gateway:** AWS API Gateway (REST API)
-- **Compute:** AWS Lambda (Python 3.x)
-- **Database:** AWS DynamoDB
-- **Authentication:** AWS Cognito User Pools
+- **Computación:** AWS Lambda (Python 3.x)
+- **Base de Datos:** AWS DynamoDB
+- **Autenticación:** AWS Cognito User Pools
 
-### Deployment
+### Despliegue
 - **Hosting:** AWS S3 + CloudFront CDN
-- **Region:** eu-south-2 (Europe - Spain)
+- **Región:** eu-south-2 (Europa - España)
 
-## Architecture
+## Arquitectura
 
 ```
 ┌─────────────┐
-│   Browser   │
+│  Navegador  │
 └──────┬──────┘
        │
        ├─────────────────────────────────┐
@@ -65,22 +65,22 @@ This project is a full-stack chat application that demonstrates the integration 
        v
 ┌──────────────┐       ┌──────────────┐
 │    Lambda    │──────>│  DynamoDB    │
-│   (Python)   │       │  (Messages)  │
+│   (Python)   │       │  (Mensajes)  │
 └──────────────┘       └──────────────┘
 ```
 
-## AWS Lambda Function
+## Función Lambda de AWS
 
-The backend uses a Python Lambda function to handle message storage:
+El backend utiliza una función Lambda en Python para gestionar el almacenamiento de mensajes:
 
-**Functionality:**
-- Receives POST requests with message data
-- Validates required fields
-- Generates unique message IDs using UUID
-- Stores messages in DynamoDB with metadata
-- Returns success/error responses with proper HTTP status codes
+**Funcionalidad:**
+- Recibe peticiones POST con datos de mensajes
+- Valida campos requeridos
+- Genera IDs únicos de mensaje usando UUID
+- Almacena mensajes en DynamoDB con metadatos
+- Devuelve respuestas de éxito/error con códigos HTTP apropiados
 
-**DynamoDB Schema:**
+**Esquema de DynamoDB:**
 ```json
 {
   "id": "uuid",
@@ -92,247 +92,247 @@ The backend uses a Python Lambda function to handle message storage:
 }
 ```
 
-## Prerequisites
+## Requisitos Previos
 
-- Node.js 16+ and npm
-- AWS Account with the following services configured:
+- Node.js 16+ y npm
+- Cuenta de AWS con los siguientes servicios configurados:
   - Cognito User Pool
   - API Gateway
-  - Lambda Function
-  - DynamoDB Table
-  - S3 Bucket
-  - CloudFront Distribution
+  - Función Lambda
+  - Tabla DynamoDB
+  - Bucket S3
+  - Distribución CloudFront
 
-## Local Development Setup
+## Configuración para Desarrollo Local
 
-### 1. Clone the repository
+### 1. Clonar el repositorio
 
 ```bash
-git clone <repository-url>
+git clone <url-del-repositorio>
 cd vue-chat-replica
 ```
 
-### 2. Install dependencies
+### 2. Instalar dependencias
 
 ```bash
 npm install
 ```
 
-### 3. Configure environment variables
+### 3. Configurar variables de entorno
 
-Copy the example environment file and fill in your AWS credentials:
+Copia el archivo de ejemplo de entorno y completa tus credenciales de AWS:
 
 ```bash
 cp .env.example .env.development
 ```
 
-Edit `.env.development` with your actual values:
+Edita `.env.development` con tus valores reales:
 
 ```env
 VITE_COGNITO_AUTHORITY=https://cognito-idp.REGION.amazonaws.com/REGION_USER_POOL_ID
-VITE_COGNITO_CLIENT_ID=your_client_id_here
-VITE_COGNITO_DOMAIN=https://your-domain.auth.REGION.amazoncognito.com
-VITE_API_BASE_URL=https://your-api-id.execute-api.REGION.amazonaws.com
+VITE_COGNITO_CLIENT_ID=tu_client_id_aqui
+VITE_COGNITO_DOMAIN=https://tu-dominio.auth.REGION.amazoncognito.com
+VITE_API_BASE_URL=https://tu-api-id.execute-api.REGION.amazonaws.com
 VITE_REDIRECT_URI=http://localhost:5173/
 VITE_POST_LOGOUT_REDIRECT_URI=http://localhost:5173/
 ```
 
-### 4. Run development server
+### 4. Ejecutar servidor de desarrollo
 
 ```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173/`
+La aplicación estará disponible en `http://localhost:5173/`
 
-## Production Build
+## Build de Producción
 
-### Build the application
+### Construir la aplicación
 
 ```bash
 npm run build
 ```
 
-The production-ready files will be generated in the `dist/` directory.
+Los archivos listos para producción se generarán en el directorio `dist/`.
 
-### Deploy to AWS
+### Desplegar en AWS
 
-1. Upload the `dist/` folder contents to your S3 bucket
-2. Invalidate CloudFront cache to serve the new version
+1. Sube el contenido de la carpeta `dist/` a tu bucket S3
+2. Invalida la caché de CloudFront para servir la nueva versión
 
 ```bash
-aws s3 sync dist/ s3://your-bucket-name --delete
-aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --paths "/*"
+aws s3 sync dist/ s3://nombre-de-tu-bucket --delete
+aws cloudfront create-invalidation --distribution-id TU_DISTRIBUTION_ID --paths "/*"
 ```
 
-## AWS Configuration Guide
+## Guía de Configuración de AWS
 
-### Cognito User Pool Setup
+### Configuración de Cognito User Pool
 
-1. Create a User Pool in AWS Cognito
-2. Configure the following settings:
-   - Sign-in options: Email
-   - Password policy: As per your requirements
-   - MFA: Optional
-3. Create an App Client:
-   - Type: Public client
-   - Authentication flows: ALLOW_USER_SRP_AUTH
-   - OAuth 2.0 grant types: Authorization code grant
-   - OAuth scopes: email, openid, profile
-4. Configure Hosted UI:
-   - Domain: Create a Cognito domain
-   - Callback URLs: Add your application URLs
-   - Sign-out URLs: Add your application URLs
+1. Crea un User Pool en AWS Cognito
+2. Configura los siguientes ajustes:
+   - Opciones de inicio de sesión: Email
+   - Política de contraseñas: Según tus requisitos
+   - MFA: Opcional
+3. Crea un App Client:
+   - Tipo: Cliente público
+   - Flujos de autenticación: ALLOW_USER_SRP_AUTH
+   - Tipos de concesión OAuth 2.0: Authorization code grant
+   - Scopes OAuth: email, openid, profile
+4. Configura Hosted UI:
+   - Dominio: Crea un dominio de Cognito
+   - URLs de callback: Añade las URLs de tu aplicación
+   - URLs de cierre de sesión: Añade las URLs de tu aplicación
 
-### API Gateway Setup
+### Configuración de API Gateway
 
-1. Create a REST API
-2. Create a `/messages` resource
-3. Add a POST method
-4. Enable CORS
-5. Deploy to a stage (e.g., `prod`)
+1. Crea una REST API
+2. Crea un recurso `/messages`
+3. Añade un método POST
+4. Habilita CORS
+5. Despliega en un stage (ej. `prod`)
 
-### Lambda Function Setup
+### Configuración de Función Lambda
 
-1. Create a Python 3.x Lambda function
-2. Add the provided Lambda code
-3. Configure IAM role with DynamoDB permissions
-4. Set timeout to at least 10 seconds
-5. Connect to API Gateway as integration
+1. Crea una función Lambda con Python 3.x
+2. Añade el código Lambda proporcionado
+3. Configura el rol IAM con permisos de DynamoDB
+4. Establece el timeout a al menos 10 segundos
+5. Conecta con API Gateway como integración
 
-### DynamoDB Table Setup
+### Configuración de Tabla DynamoDB
 
-1. Create a table with:
-   - Table name: `ProyectoFinalAccesoADatos`
-   - Partition key: `id` (String)
-   - On-demand billing mode recommended
+1. Crea una tabla con:
+   - Nombre de tabla: `ProyectoFinalAccesoADatos`
+   - Clave de partición: `id` (String)
+   - Modo de facturación bajo demanda recomendado
 
-## Project Structure
+## Estructura del Proyecto
 
 ```
 vue-chat-replica/
 ├── src/
-│   ├── components/          # Reusable Vue components
-│   │   ├── AuthLayout.vue   # Authentication page layout
-│   │   ├── Button.vue       # Custom button component
-│   │   ├── InputBar.vue     # Message input component
-│   │   ├── MainLayout.vue   # Main app layout
-│   │   ├── MessageBubble.vue # Chat message component
-│   │   └── ModelSelector.vue # AI model selector
-│   ├── views/               # Page components
-│   │   ├── ChatView.vue     # Main chat interface
-│   │   ├── LoginView.vue    # Login page
-│   │   └── RegisterView.vue # Registration page
-│   ├── router/              # Vue Router configuration
+│   ├── components/          # Componentes Vue reutilizables
+│   │   ├── AuthLayout.vue   # Layout de páginas de autenticación
+│   │   ├── Button.vue       # Componente de botón personalizado
+│   │   ├── InputBar.vue     # Componente de entrada de mensajes
+│   │   ├── MainLayout.vue   # Layout principal de la app
+│   │   ├── MessageBubble.vue # Componente de mensaje de chat
+│   │   └── ModelSelector.vue # Selector de modelo de IA
+│   ├── views/               # Componentes de página
+│   │   ├── ChatView.vue     # Interfaz principal de chat
+│   │   ├── LoginView.vue    # Página de inicio de sesión
+│   │   └── RegisterView.vue # Página de registro
+│   ├── router/              # Configuración de Vue Router
 │   │   └── index.js
-│   ├── services/            # API service layer
-│   │   └── chatService.js   # Chat API integration
-│   ├── composables/         # Vue composables
-│   │   └── useAuth.js       # Authentication logic
-│   ├── plugins/             # Vue plugins
-│   │   └── authPlugin.js    # Auth plugin setup
-│   ├── assets/              # Static assets
-│   ├── style.css            # Global styles
-│   ├── App.vue              # Root component
-│   └── main.js              # Application entry point
-├── public/                  # Public static files
-├── dist/                    # Production build output
-├── .env.example             # Environment variables template
-├── .gitignore               # Git ignore rules
-├── index.html               # HTML entry point
-├── package.json             # NPM dependencies
-├── vite.config.js           # Vite configuration
-└── README.md                # This file
+│   ├── services/            # Capa de servicios API
+│   │   └── chatService.js   # Integración con API de chat
+│   ├── composables/         # Composables de Vue
+│   │   └── useAuth.js       # Lógica de autenticación
+│   ├── plugins/             # Plugins de Vue
+│   │   └── authPlugin.js    # Configuración del plugin de auth
+│   ├── assets/              # Assets estáticos
+│   ├── style.css            # Estilos globales
+│   ├── App.vue              # Componente raíz
+│   └── main.js              # Punto de entrada de la aplicación
+├── public/                  # Archivos estáticos públicos
+├── dist/                    # Salida del build de producción
+├── .env.example             # Plantilla de variables de entorno
+├── .gitignore               # Reglas de Git ignore
+├── index.html               # Punto de entrada HTML
+├── package.json             # Dependencias NPM
+├── vite.config.js           # Configuración de Vite
+└── README.md                # Este archivo
 ```
 
-## Security Considerations
+## Consideraciones de Seguridad
 
-**Important:** Never commit sensitive credentials to version control.
+**Importante:** Nunca hagas commit de credenciales sensibles al control de versiones.
 
-The following files are excluded from Git via `.gitignore`:
-- `.env.development` - Contains development credentials
-- `.env.production` - Contains production credentials
-- `node_modules/` - Dependencies
-- `dist/` - Build artifacts
+Los siguientes archivos están excluidos de Git mediante `.gitignore`:
+- `.env.development` - Contiene credenciales de desarrollo
+- `.env.production` - Contiene credenciales de producción
+- `node_modules/` - Dependencias
+- `dist/` - Artefactos de build
 
-Always use the `.env.example` file as a template and create your own environment files locally.
+Utiliza siempre el archivo `.env.example` como plantilla y crea tus propios archivos de entorno localmente.
 
-## Available Scripts
+## Scripts Disponibles
 
-### Development
+### Desarrollo
 ```bash
-npm run dev          # Start development server
+npm run dev          # Iniciar servidor de desarrollo
 ```
 
-### Production
+### Producción
 ```bash
-npm run build        # Build for production
-npm run preview      # Preview production build locally
+npm run build        # Construir para producción
+npm run preview      # Previsualizar build de producción localmente
 ```
 
-## API Endpoints
+## Endpoints de la API
 
 ### POST /messages
 
-Stores a chat message in DynamoDB.
+Almacena un mensaje de chat en DynamoDB.
 
-**Request Body:**
+**Cuerpo de la Petición:**
 ```json
 {
-  "userEmail": "user@example.com",
-  "message": "Hello, world!",
+  "userEmail": "usuario@ejemplo.com",
+  "message": "¡Hola, mundo!",
   "model": "gpt4"
 }
 ```
 
-**Response (Success):**
+**Respuesta (Éxito):**
 ```json
 {
   "success": true,
-  "messageId": "uuid-here",
+  "messageId": "uuid-aqui",
   "message": "Mensaje guardado exitosamente"
 }
 ```
 
-**Response (Error):**
+**Respuesta (Error):**
 ```json
 {
-  "error": "Error message description"
+  "error": "Descripción del mensaje de error"
 }
 ```
 
-## Troubleshooting
+## Solución de Problemas
 
-### Authentication Issues
+### Problemas de Autenticación
 
-If you encounter "No matching state found in storage" errors:
-1. Verify that your Cognito callback URLs match your application URLs exactly
-2. Check that the Cognito domain is correctly configured
-3. Ensure cookies are enabled in your browser
+Si encuentras errores de "No matching state found in storage":
+1. Verifica que tus URLs de callback de Cognito coincidan exactamente con las URLs de tu aplicación
+2. Comprueba que el dominio de Cognito esté configurado correctamente
+3. Asegúrate de que las cookies estén habilitadas en tu navegador
 
-### API Connection Issues
+### Problemas de Conexión con la API
 
-If messages are not being saved:
-1. Check that `VITE_API_BASE_URL` is correctly set
-2. Verify API Gateway CORS configuration
-3. Check Lambda function logs in CloudWatch
-4. Verify DynamoDB table permissions
+Si los mensajes no se están guardando:
+1. Verifica que `VITE_API_BASE_URL` esté configurado correctamente
+2. Comprueba la configuración de CORS en API Gateway
+3. Revisa los logs de la función Lambda en CloudWatch
+4. Verifica los permisos de la tabla DynamoDB
 
-### Build Issues
+### Problemas de Build
 
-If the build fails:
-1. Clear node_modules and reinstall: `rm -rf node_modules && npm install`
-2. Clear Vite cache: `rm -rf node_modules/.vite`
-3. Ensure all environment variables are set
+Si el build falla:
+1. Limpia node_modules y reinstala: `rm -rf node_modules && npm install`
+2. Limpia la caché de Vite: `rm -rf node_modules/.vite`
+3. Asegúrate de que todas las variables de entorno estén configuradas
 
-## License
+## Licencia
 
 MIT
 
-## Contributing
+## Contribuciones
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+¡Las contribuciones son bienvenidas! Por favor, siéntete libre de enviar un Pull Request.
 
-## Support
+## Soporte
 
-For issues and questions, please open an issue in the GitHub repository.
+Para problemas y preguntas, por favor abre un issue en el repositorio de GitHub.

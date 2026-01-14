@@ -69,6 +69,182 @@ Este proyecto es una aplicación de chat full-stack que demuestra la integració
 └──────────────┘       └──────────────┘
 ```
 
+## Decisiones de Arquitectura de Base de Datos
+
+### ¿Por qué NoSQL en lugar de SQL?
+
+La elección de una base de datos NoSQL sobre una base de datos SQL relacional tradicional para este proyecto se fundamenta en varios factores técnicos y arquitectónicos que se alinean perfectamente con los requisitos de una aplicación de chat moderna:
+
+#### 1. **Flexibilidad del Esquema**
+
+Las bases de datos NoSQL ofrecen esquemas flexibles que permiten almacenar datos sin una estructura rígida predefinida. En una aplicación de chat, esto es especialmente valioso porque:
+
+- Los mensajes pueden evolucionar para incluir diferentes tipos de contenido (texto, imágenes, archivos adjuntos, reacciones, etc.) sin necesidad de migraciones complejas de base de datos
+- Diferentes modelos de IA pueden requerir metadatos específicos que varían entre sí
+- La adición de nuevas características (como hilos de conversación, menciones, o etiquetas) no requiere modificar el esquema existente
+
+#### 2. **Escalabilidad Horizontal**
+
+Las bases de datos NoSQL están diseñadas desde el principio para escalar horizontalmente, lo cual es crucial para aplicaciones que pueden experimentar un crecimiento rápido:
+
+- **Particionamiento automático**: Los datos se distribuyen automáticamente entre múltiples servidores
+- **Sin límites de escalado**: Puedes añadir más nodos según sea necesario sin interrupciones del servicio
+- **Rendimiento predecible**: El rendimiento se mantiene constante independientemente del volumen de datos
+
+En contraste, las bases de datos SQL tradicionales escalan verticalmente (añadiendo más recursos a un único servidor), lo cual tiene límites físicos y económicos.
+
+#### 3. **Modelo de Datos Orientado a Documentos**
+
+Los mensajes de chat son inherentemente documentos auto-contenidos con toda la información necesaria:
+
+```json
+{
+  "id": "mensaje-123",
+  "userEmail": "usuario@ejemplo.com",
+  "message": "Contenido del mensaje",
+  "model": "gpt4",
+  "timestamp": 1705251600000,
+  "createdAt": "2024-01-14T18:00:00Z"
+}
+```
+
+Este modelo se mapea naturalmente a NoSQL, donde cada mensaje es un documento independiente, en lugar de estar fragmentado en múltiples tablas relacionales.
+
+#### 4. **Rendimiento en Operaciones de Lectura/Escritura**
+
+Las aplicaciones de chat requieren operaciones de escritura extremadamente rápidas:
+
+- **Baja latencia**: NoSQL puede ofrecer latencias de milisegundos para operaciones de lectura y escritura
+- **Alto throughput**: Capacidad para manejar miles de mensajes por segundo
+- **Sin joins complejos**: Las consultas son más simples y rápidas al no requerir uniones entre tablas
+
+#### 5. **Arquitectura Serverless y Cloud-Native**
+
+NoSQL se integra perfectamente con arquitecturas serverless modernas:
+
+- No requiere gestión de conexiones persistentes (problemático en Lambda)
+- Facturación basada en uso real (pay-per-request)
+- Auto-escalado automático sin intervención manual
+- Alta disponibilidad integrada sin configuración adicional
+
+#### 6. **Simplicidad de Consultas**
+
+Para una aplicación de chat, las consultas típicas son simples:
+
+- Obtener mensajes por usuario
+- Obtener mensajes por modelo
+- Obtener mensajes en un rango de tiempo
+
+Estas consultas no requieren las capacidades complejas de JOIN, transacciones ACID multi-tabla, o consultas relacionales avanzadas que justificarían el uso de SQL.
+
+### ¿Por qué DynamoDB Específicamente?
+
+Una vez decidido el uso de NoSQL, la elección de **AWS DynamoDB** sobre otras alternativas (MongoDB, Cassandra, Couchbase, etc.) se basa en ventajas específicas para este proyecto:
+
+#### 1. **Integración Nativa con el Ecosistema AWS**
+
+DynamoDB forma parte del ecosistema de AWS, lo que proporciona ventajas significativas:
+
+- **Integración perfecta con Lambda**: Conexión directa sin necesidad de gestionar conexiones de red
+- **IAM para autenticación**: Uso de roles y políticas de IAM en lugar de credenciales de base de datos
+- **VPC no requerido**: Acceso directo desde Lambda sin configuración de red compleja
+- **CloudWatch integrado**: Monitorización y logs automáticos sin configuración adicional
+- **Consistencia del stack**: Todo el proyecto utiliza servicios AWS (Cognito, API Gateway, Lambda, S3, CloudFront)
+
+#### 2. **Modelo de Facturación Flexible**
+
+DynamoDB ofrece dos modelos de facturación que se adaptan perfectamente a diferentes fases del proyecto:
+
+- **On-Demand**: Ideal para desarrollo y aplicaciones con tráfico impredecible
+  - Pagas solo por las lecturas/escrituras que realizas
+  - Sin necesidad de planificar capacidad
+  - Perfecto para proyectos académicos o en fase inicial
+  
+- **Provisioned Capacity**: Para producción con tráfico predecible
+  - Costos más bajos con volúmenes consistentes
+  - Auto-scaling disponible
+
+#### 3. **Rendimiento Garantizado**
+
+DynamoDB ofrece garantías de rendimiento que otras soluciones NoSQL no proporcionan:
+
+- **Latencia de un dígito en milisegundos**: Garantizada a cualquier escala
+- **SLA del 99.99%**: Disponibilidad garantizada por contrato
+- **Rendimiento consistente**: No se degrada con el crecimiento de datos
+- **Capacidad ilimitada**: Sin límites prácticos de almacenamiento
+
+#### 4. **Cero Administración de Infraestructura**
+
+DynamoDB es completamente gestionado (fully managed):
+
+- **Sin servidores que mantener**: No hay instancias de base de datos que parchear o actualizar
+- **Backups automáticos**: Point-in-time recovery incluido
+- **Replicación multi-región**: Disponible con un clic si se necesita
+- **Escalado automático**: Sin intervención manual necesaria
+- **Alta disponibilidad**: Replicación automática en múltiples zonas de disponibilidad
+
+Esto es especialmente valioso para proyectos académicos o startups donde el tiempo de desarrollo es limitado y no se puede dedicar recursos a administración de bases de datos.
+
+#### 5. **Seguridad Integrada**
+
+DynamoDB proporciona características de seguridad robustas sin configuración compleja:
+
+- **Encriptación en reposo**: Habilitada por defecto con AWS KMS
+- **Encriptación en tránsito**: Todas las comunicaciones sobre HTTPS/TLS
+- **Control de acceso granular**: Políticas IAM a nivel de tabla, ítem o atributo
+- **Auditoría completa**: AWS CloudTrail registra todas las operaciones
+
+#### 6. **Modelo de Datos Simple y Efectivo**
+
+Para este caso de uso específico, el modelo de clave-valor de DynamoDB es ideal:
+
+- **Partition Key**: `id` (UUID único del mensaje)
+- **Atributos flexibles**: Todos los demás campos sin restricciones de esquema
+- **Índices secundarios**: Disponibles si necesitamos consultar por `userEmail` o `model`
+
+No necesitamos las capacidades de consulta complejas de MongoDB o la arquitectura distribuida de Cassandra.
+
+#### 7. **Ecosistema y Herramientas**
+
+DynamoDB cuenta con un ecosistema maduro:
+
+- **AWS SDK**: Disponible en todos los lenguajes principales (Python, JavaScript, Java, etc.)
+- **DynamoDB Streams**: Para procesamiento de eventos en tiempo real si se necesita
+- **DAX (DynamoDB Accelerator)**: Caché en memoria si se requiere microsegundos de latencia
+- **AWS Console**: Interfaz web intuitiva para desarrollo y debugging
+- **Local DynamoDB**: Versión local para desarrollo sin costos
+
+#### 8. **Costo-Efectividad para el Caso de Uso**
+
+Para una aplicación de chat con volumen moderado:
+
+- **Free Tier**: 25 GB de almacenamiento y 25 WCU/RCU gratuitos permanentemente
+- **Almacenamiento económico**: $0.25 por GB/mes (mucho más barato que mantener servidores)
+- **Sin costos ocultos**: No hay costos de licencias, mantenimiento o administración
+
+#### Comparación con Alternativas NoSQL
+
+| Característica | DynamoDB | MongoDB Atlas | Cassandra | Redis |
+|----------------|----------|---------------|-----------|-------|
+| Gestión completa | ✅ Sí | ⚠️ Parcial | ❌ No | ⚠️ Parcial |
+| Integración AWS | ✅ Nativa | ❌ Terceros | ❌ Terceros | ⚠️ ElastiCache |
+| Escalado automático | ✅ Sí | ⚠️ Limitado | ❌ Manual | ⚠️ Limitado |
+| Facturación por uso | ✅ Sí | ❌ Por instancia | ❌ Por servidor | ❌ Por instancia |
+| Latencia garantizada | ✅ <10ms | ⚠️ Variable | ⚠️ Variable | ✅ <1ms |
+| Persistencia | ✅ Sí | ✅ Sí | ✅ Sí | ⚠️ Opcional |
+| Curva de aprendizaje | ✅ Baja | ⚠️ Media | ❌ Alta | ✅ Baja |
+
+### Conclusión
+
+La elección de DynamoDB para este proyecto no es simplemente una preferencia, sino una decisión arquitectónica fundamentada que aprovecha:
+
+1. **Las ventajas inherentes de NoSQL** para aplicaciones de chat (flexibilidad, escalabilidad, rendimiento)
+2. **La integración perfecta con AWS** para una arquitectura serverless coherente
+3. **La simplicidad operacional** que permite enfocarse en el desarrollo de características
+4. **El modelo de costos** que se alinea con las necesidades de un proyecto académico/inicial
+
+Esta combinación hace que DynamoDB sea la opción óptima para construir una aplicación de chat moderna, escalable y mantenible en AWS.
+
 ## Función Lambda de AWS
 
 El backend utiliza una función Lambda en Python para gestionar el almacenamiento de mensajes:
@@ -91,6 +267,116 @@ El backend utiliza una función Lambda en Python para gestionar el almacenamient
   "createdAt": "ISO 8601 string"
 }
 ```
+
+### Justificación de los Campos del Esquema
+
+Cada campo almacenado en DynamoDB ha sido cuidadosamente seleccionado para cumplir con requisitos funcionales y técnicos específicos:
+
+#### **id** (String - UUID)
+
+**Propósito:** Clave de partición (Partition Key) de DynamoDB e identificador único del mensaje.
+
+**Justificación:**
+- **Unicidad garantizada**: Los UUIDs (Universally Unique Identifiers) garantizan que cada mensaje tenga un identificador único sin necesidad de coordinación entre servidores o consultas a la base de datos
+- **Distribución uniforme**: Los UUIDs aleatorios aseguran una distribución uniforme de los datos entre las particiones de DynamoDB, evitando "hot partitions" que degradarían el rendimiento
+- **Escalabilidad**: Permite la generación de IDs en el lado del servidor (Lambda) sin riesgo de colisiones, incluso con miles de escrituras concurrentes
+- **Trazabilidad**: Facilita el seguimiento de mensajes específicos en logs, debugging y auditorías
+- **Idempotencia**: Permite implementar operaciones idempotentes si se necesita reenviar mensajes
+
+**Tipo de dato:** String en lugar de número porque los UUIDs son alfanuméricos (ej: `550e8400-e29b-41d4-a716-446655440000`)
+
+#### **userEmail** (String)
+
+**Propósito:** Identificador del usuario que envió el mensaje.
+
+**Justificación:**
+- **Identificación de usuario**: Vincula cada mensaje con el usuario autenticado que lo creó
+- **Integración con Cognito**: AWS Cognito utiliza el email como identificador principal del usuario, manteniendo consistencia en todo el sistema
+- **Consultas futuras**: Permite crear índices secundarios (GSI) para consultar todos los mensajes de un usuario específico
+- **Auditoría y compliance**: Necesario para cumplir con requisitos de trazabilidad y auditoría (saber quién dijo qué y cuándo)
+- **Funcionalidades futuras**: Habilita características como historial de conversaciones por usuario, estadísticas de uso, o filtrado de contenido
+- **Seguridad**: Permite implementar controles de acceso a nivel de datos (los usuarios solo pueden ver sus propios mensajes)
+
+**Tipo de dato:** String para almacenar direcciones de email completas (ej: `usuario@ejemplo.com`)
+
+#### **message** (String)
+
+**Propósito:** Contenido textual del mensaje enviado por el usuario.
+
+**Justificación:**
+- **Contenido principal**: Es el dato fundamental de la aplicación - el mensaje real que el usuario quiere enviar al modelo de IA
+- **Persistencia de conversaciones**: Permite almacenar el historial completo de interacciones para referencia futura
+- **Análisis y mejora**: Posibilita análisis de patrones de uso, tipos de preguntas frecuentes, o mejoras en la experiencia de usuario
+- **Recuperación ante fallos**: Si hay un error al procesar el mensaje, este queda almacenado y puede ser reprocesado
+- **Funcionalidades futuras**: Habilita búsqueda de texto completo, análisis de sentimiento, o detección de contenido inapropiado
+- **Compliance y legal**: Necesario para cumplir con requisitos legales de retención de datos o investigaciones
+
+**Tipo de dato:** String con capacidad para almacenar texto de longitud variable (DynamoDB soporta hasta 400 KB por ítem)
+
+#### **model** (String)
+
+**Propósito:** Identificador del modelo de IA seleccionado por el usuario para procesar el mensaje.
+
+**Justificación:**
+- **Contexto de la conversación**: Registra qué modelo de IA estaba usando el usuario en ese momento (GPT-4, Claude, Gemini, etc.)
+- **Segmentación de datos**: Permite agrupar y analizar mensajes por modelo para comparar patrones de uso
+- **Facturación diferenciada**: Si en el futuro se implementa facturación, diferentes modelos pueden tener costos distintos
+- **Análisis de rendimiento**: Permite evaluar qué modelos son más populares o efectivos para ciertos tipos de consultas
+- **Funcionalidades futuras**: Habilita características como "continuar conversación con el mismo modelo" o "comparar respuestas entre modelos"
+- **Debugging**: Facilita la identificación de problemas específicos de un modelo particular
+- **Índices secundarios**: Permite crear GSI para consultar todos los mensajes enviados a un modelo específico
+
+**Tipo de dato:** String para almacenar identificadores de modelo (ej: `"gpt4"`, `"claude"`, `"gemini"`)
+
+#### **timestamp** (Number)
+
+**Propósito:** Marca de tiempo en formato Unix (milisegundos desde epoch) del momento de creación del mensaje.
+
+**Justificación:**
+- **Ordenamiento eficiente**: Los números se ordenan más eficientemente que las cadenas en DynamoDB, crucial para consultas de rango temporal
+- **Rendimiento de consultas**: Permite consultas rápidas como "mensajes de las últimas 24 horas" o "mensajes entre dos fechas"
+- **Índices de ordenamiento**: Puede usarse como Sort Key en índices secundarios para ordenar mensajes cronológicamente
+- **Cálculos temporales**: Facilita cálculos como tiempo entre mensajes, frecuencia de uso, o patrones de actividad
+- **Time-To-Live (TTL)**: DynamoDB puede usar campos numéricos de timestamp para eliminar automáticamente mensajes antiguos si se configura TTL
+- **Compatibilidad universal**: El formato Unix timestamp es estándar en programación y fácil de convertir en cualquier lenguaje
+- **Precisión**: Milisegundos permiten ordenar mensajes incluso si varios se crean en el mismo segundo
+
+**Tipo de dato:** Number (ej: `1705251600000` = 14 de enero de 2024, 18:00:00 GMT)
+
+#### **createdAt** (String - ISO 8601)
+
+**Propósito:** Representación legible por humanos de la fecha y hora de creación del mensaje.
+
+**Justificación:**
+- **Legibilidad humana**: Formato fácil de leer y entender sin necesidad de conversión (ej: `"2024-01-14T18:00:00Z"`)
+- **Debugging y logs**: Facilita la depuración al mostrar fechas en formato comprensible directamente en la consola de AWS o logs
+- **Internacionalización**: El formato ISO 8601 es un estándar internacional que incluye zona horaria
+- **Auditoría**: Útil para reportes y auditorías donde se necesita mostrar fechas en formato legible
+- **Compatibilidad**: Muchas bibliotecas de frontend pueden parsear directamente ISO 8601 sin conversiones adicionales
+- **Redundancia intencional**: Aunque `timestamp` contiene la misma información, tener ambos formatos evita conversiones repetidas y posibles errores
+- **Zona horaria explícita**: El formato ISO 8601 incluye la zona horaria (Z = UTC), evitando ambigüedades
+
+**Tipo de dato:** String en formato ISO 8601 con zona horaria UTC (ej: `"2024-01-14T18:00:00.000Z"`)
+
+### Diseño del Esquema: Principios Aplicados
+
+El diseño de este esquema sigue varios principios de mejores prácticas:
+
+1. **Desnormalización intencional**: Almacenamos tanto `timestamp` (número) como `createdAt` (string) para optimizar diferentes casos de uso sin necesidad de conversiones en tiempo de ejecución
+
+2. **Campos autocontenidos**: Cada ítem contiene toda la información necesaria sin depender de otras tablas, siguiendo el patrón NoSQL de evitar JOINs
+
+3. **Preparación para escalabilidad**: El uso de UUID como partition key asegura distribución uniforme de datos, crítico para escalar a millones de mensajes
+
+4. **Trazabilidad completa**: La combinación de `id`, `userEmail`, `timestamp` y `createdAt` proporciona trazabilidad completa de cada mensaje
+
+5. **Flexibilidad futura**: El esquema permite añadir nuevos campos sin migraciones (ej: `aiResponse`, `sentiment`, `language`, etc.) gracias a la naturaleza schema-less de DynamoDB
+
+6. **Optimización de consultas**: Los campos están diseñados para soportar índices secundarios globales (GSI) comunes como:
+   - GSI por `userEmail` + `timestamp` (mensajes de un usuario ordenados cronológicamente)
+   - GSI por `model` + `timestamp` (mensajes por modelo ordenados cronológicamente)
+
+Este diseño equilibra las necesidades actuales de la aplicación con la flexibilidad para evolucionar sin cambios disruptivos en el esquema.
 
 ## Requisitos Previos
 

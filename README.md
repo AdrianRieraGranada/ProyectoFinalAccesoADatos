@@ -8,6 +8,8 @@ Una aplicación de ChatBot construida con Vue 3, Vite y servicios serverless de 
 
 - Adrián Riera Granada
 - Raúl González Alguacil
+- Itai Picornell Cortés
+- Isaac Cabrera Remacho
 
 ## Descripción General
 

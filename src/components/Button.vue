@@ -28,15 +28,23 @@ defineProps({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: 6px;
+  padding: 10px 14px;
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   cursor: pointer;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   transition: all 0.2s ease;
   user-select: none;
+}
+
+@media (min-width: 768px) {
+  .btn {
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+  }
 }
 
 .btn-primary {

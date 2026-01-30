@@ -55,9 +55,16 @@ const handleKeyPress = (event) => {
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 12px 16px;
-  gap: 12px;
+  padding: 10px 12px;
+  gap: 8px;
   transition: border-color 0.2s;
+}
+
+@media (min-width: 768px) {
+  .input-wrapper {
+    padding: 12px 16px;
+    gap: 12px;
+  }
 }
 
 .input-wrapper:focus-within {
@@ -82,7 +89,13 @@ const handleKeyPress = (event) => {
   border: none;
   outline: none;
   color: var(--text-primary);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  .main-input {
+    font-size: 0.95rem;
+  }
 }
 
 .main-input::placeholder {
@@ -92,7 +105,13 @@ const handleKeyPress = (event) => {
 .right-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+}
+
+@media (min-width: 768px) {
+  .right-actions {
+    gap: 12px;
+  }
 }
 
 .command-hint {
@@ -113,10 +132,16 @@ const handleKeyPress = (event) => {
   background: var(--accent-primary);
   border: none;
   border-radius: var(--radius-md);
-  padding: 8px 12px;
+  padding: 8px 10px;
   color: white;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+@media (min-width: 768px) {
+  .send-btn {
+    padding: 8px 12px;
+  }
 }
 
 .send-btn:hover:not(:disabled) {

@@ -78,8 +78,14 @@ defineProps({
 
 <style scoped>
 .message-wrapper {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   width: 100%;
+}
+
+@media (min-width: 768px) {
+  .message-wrapper {
+    margin-bottom: 2rem;
+  }
 }
 
 /* User Bubble Styles */
@@ -92,92 +98,157 @@ defineProps({
 .user-bubble {
   background-color: var(--accent-primary);
   color: white;
-  padding: 14px 20px;
+  padding: 12px 16px;
   border-radius: var(--radius-lg);
-  font-size: 1rem;
-  max-width: 80%;
+  font-size: 0.95rem;
+  max-width: 95%;
   line-height: 1.5;
   box-shadow: var(--shadow-lg);
 }
 
+@media (min-width: 480px) {
+  .user-bubble {
+    max-width: 85%;
+  }
+}
+
+@media (min-width: 768px) {
+  .user-bubble {
+    padding: 14px 20px;
+    font-size: 1rem;
+    max-width: 80%;
+  }
+}
+
 .meta {
-  margin-top: 8px;
+  margin-top: 6px;
   margin-right: 4px;
+  font-size: 0.7rem;
+}
+
+@media (min-width: 768px) {
+  .meta {
+    margin-top: 8px;
+  }
 }
 
 /* AI Message Styles */
 .message-wrapper.ai {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .message-wrapper.ai {
+    margin-top: 2rem;
+  }
 }
 
 .ai-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 1rem;
+  gap: 10px;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .ai-header {
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
 }
 
 .logo-placeholder {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   background: white;
-  border-radius: 4px; /* Adjust based on icon */
-  /* Add specific green dot logo if needed via CSS or img */
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .logo-placeholder {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .model-name {
   color: var(--text-primary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-size: 0.8rem;
+}
+
+@media (min-width: 768px) {
+  .model-name {
+    font-size: inherit;
+  }
 }
 
 .ai-content {
-  background-color: var(--bg-secondary); /* Or transparent depending on exact look, image shows card-like potentially or just text on bg */
-  /* Actually looks like the AI response is just text on the main background with special cards inside it. 
-     Wait, looking closer at the image... 
-     The text "Vector databases are designed..." is inside a border container? 
-     No, the darker box is the card content. 
-     Let's assume the whole AI response block is card-like or just text.
-     In the image, "Vector databases..." is text. 
-     Then there are cards "VECTOR DB" and "RELATIONAL DB".
-  */
-  color: var(--text-secondary); /* Looks like light grey text */
-  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
   line-height: 1.6;
+  font-size: 0.9rem;
 }
 
-/* The box container around the whole response?
-   The image shows a large border container around the AI response?
-   No, it looks like a large card container for the whole AI response.
-   Let's wrap AI response in a bordered card.
-*/
+@media (min-width: 768px) {
+  .ai-content {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+  }
+}
+
 .ai-message {
   border: 1px solid var(--border-color);
-  background-color: rgba(17, 24, 39, 0.4); /* Very subtle fill */
+  background-color: rgba(17, 24, 39, 0.4);
   border-radius: var(--radius-xl);
-  padding: 24px;
+  padding: 16px;
+}
+
+@media (min-width: 768px) {
+  .ai-message {
+    padding: 24px;
+  }
 }
 
 .ai-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 24px;
-  padding-top: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
   border-top: 1px solid var(--border-color);
+}
+
+@media (min-width: 768px) {
+  .ai-actions {
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+  }
 }
 
 .action-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  gap: 4px;
+  padding: 6px 10px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
   background: var(--bg-tertiary);
   color: var(--text-secondary);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+@media (min-width: 768px) {
+  .action-btn {
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
 }
 
 .action-btn:hover {
@@ -193,6 +264,13 @@ defineProps({
 
 .spacer {
   flex: 1;
+  min-width: 100%;
+}
+
+@media (min-width: 640px) {
+  .spacer {
+    min-width: auto;
+  }
 }
 
 .action-btn.right {

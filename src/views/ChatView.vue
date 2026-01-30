@@ -135,32 +135,66 @@ provide('onModelChange', handleModelChange)
 <style scoped>
 .header-content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .header-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
 }
 
 .user-info {
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+  .user-info {
+    width: auto;
+    justify-content: flex-end;
+  }
 }
 
 .user-email {
   font-size: 0.875rem;
   color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .user-email {
+    max-width: 150px;
+  }
 }
 
 .logout-btn {
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
   color: #ef4444;
   border-radius: var(--radius-md);
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .logout-btn {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+  }
 }
 
 .logout-btn:hover {

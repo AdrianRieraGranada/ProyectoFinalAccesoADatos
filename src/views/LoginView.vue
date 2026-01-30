@@ -50,10 +50,26 @@ const handleLogin = async () => {
 <style scoped>
 .login-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
-.text-2xl { font-size: 1.5rem; color: white; }
+@media (min-width: 768px) {
+  .login-header {
+    margin-bottom: 32px;
+  }
+}
+
+.text-2xl { 
+  font-size: 1.35rem; 
+  color: white; 
+}
+
+@media (min-width: 768px) {
+  .text-2xl { 
+    font-size: 1.5rem; 
+  }
+}
+
 .mb-2 { margin-bottom: 0.5rem; }
 .mt-6 { margin-top: 1.5rem; }
 .text-center { text-align: center; }
